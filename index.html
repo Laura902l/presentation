@@ -699,22 +699,17 @@ slide({
     <div style="font-size:28px;font-weight:700;color:#BFE3CB;margin-top:6px">(1931–1976)</div>
     <div style="margin-top:28px;display:flex;align-items:center;gap:14px"><div id="tmV" style="font-size:64px;font-weight:900;font-variant-numeric:tabular-nums">3:00</div><button class="btn sm gold" id="tmB" style="padding:0 26px">▶</button><button class="btn sm ghost" id="tmR" style="padding:0 22px">↺</button></div>
   </div>
-  <div class="abs pop" style="--d:300;left:830px;top:225px;width:1010px;height:225px;border-radius:30px;background:#0F3D2A;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 14px 40px rgba(15,61,42,.3)"><div id="ytP"></div></div>
   <div id="lqs"></div>`,
   init(r) {
     const q = ['Өлеңде не туралы айтылған?', 'Жайлауды қандай сөздермен сипаттайды?', 'Өлең саған қандай сезім сыйлады?'], cols = [C.g2, C.sky, C.org];
-    $('#lqs', r).innerHTML = q.map((t, i) => '<div class="pop" style="--d:' + (450 + i * 150) + ';position:absolute;left:830px;top:' + (480 + i * 172) + 'px;width:1010px;height:150px">' + flipHTML('', 'width:100%;height:100%', ['background:linear-gradient(90deg,' + cols[i] + ',#0F3D2A);color:#fff;flex-direction:row;gap:30px', '<div style="font-size:70px;font-weight:900">' + (i + 1) + '</div><div style="font-size:42px;font-weight:900">Сұрақты аш 👆</div>'], ['background:#fff;color:#1B2E24;border:7px solid ' + cols[i], '<div style="font-size:44px;font-weight:900">' + t + '</div>']) + '</div>').join('');
+    $('#lqs', r).innerHTML = q.map((t, i) => '<div class="pop" style="--d:' + (450 + i * 150) + ';position:absolute;left:830px;top:' + (225 + i * 275) + 'px;width:1010px;height:220px">' + flipHTML('', 'width:100%;height:100%', ['background:linear-gradient(90deg,' + cols[i] + ',#0F3D2A);color:#fff;flex-direction:row;gap:30px', '<div style="font-size:70px;font-weight:900">' + (i + 1) + '</div><div style="font-size:42px;font-weight:900">Сұрақты аш 👆</div>'], ['background:#fff;color:#1B2E24;border:7px solid ' + cols[i], '<div style="font-size:44px;font-weight:900">' + t + '</div>']) + '</div>').join('');
     $$('#lqs .flip', r).forEach((f) => f.addEventListener('click', () => { f.classList.toggle('on'); sfx.flip(); }));
-    let sec = 180, tm = null, yt = null; const show = () => { $('#tmV', r).textContent = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
+    let sec = 180, tm = null; const show = () => { $('#tmV', r).textContent = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
     const stopUI = () => { clearInterval(tm); tm = null; $('#tmB', r).textContent = '▶'; $('#vinyl', r).style.animation = ''; };
-    const startUI = () => { if (tm) return; $('#tmB', r).textContent = '⏸'; $('#vinyl', r).style.animation = 'spin 3s linear infinite'; tm = setInterval(() => { sec--; show(); if (sec <= 0) { stopUI(); sec = 180; show(); sfx.win(); if (yt) yt.pauseVideo(); } }, 1000); };
-    const ytApi = new Promise((res) => { if (window.YT && YT.Player) return res(); window.onYouTubeIframeAPIReady = res; const t = document.createElement('script'); t.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(t); });
-    ytApi.then(() => { yt = new YT.Player($('#ytP', r), { width: 400, height: 225, videoId: 'Lsdlr9m0_4I', playerVars: { rel: 0, playsinline: 1 }, events: { onStateChange: (e) => { if (e.data === 1) startUI(); else if (e.data === 2 || e.data === 0) stopUI(); } } }); });
-    $('#tmB', r).onclick = () => { if (yt && yt.getPlayerState) { if (yt.getPlayerState() === 1) yt.pauseVideo(); else yt.playVideo(); } else if (tm) stopUI(); else startUI(); };
-    $('#tmR', r).onclick = () => { if (yt && yt.stopVideo) yt.stopVideo(); stopUI(); sec = 180; show(); };
-    r._stopSong = () => { if (yt && yt.pauseVideo) yt.pauseVideo(); stopUI(); };
+    $('#tmB', r).onclick = () => { if (tm) { stopUI(); return; } window.open('https://www.youtube.com/watch?v=Lsdlr9m0_4I', '_blank', 'noopener'); $('#tmB', r).textContent = '⏸'; $('#vinyl', r).style.animation = 'spin 3s linear infinite'; tm = setInterval(() => { sec--; show(); if (sec <= 0) { stopUI(); sec = 180; show(); sfx.win(); } }, 1000); };
+    $('#tmR', r).onclick = () => { stopUI(); sec = 180; show(); };
   },
-  leave(r) { if (r._stopSong) r._stopSong(); },
+  leave(r) { const b = $('#tmR', r); if (b) b.click(); },
 });
 
 /* ---------- 14. WHEEL ---------- */
@@ -980,7 +975,7 @@ slide({
   <div class="abs" style="left:0;top:0;width:1920px;height:1080px;background:linear-gradient(180deg,rgba(9,42,28,.35),rgba(9,42,28,.9))"></div>
   <div class="abs pop" style="--d:200;left:0;top:130px;width:1920px;text-align:center;font-size:230px;font-weight:900;color:#fff;line-height:1;text-shadow:0 10px 40px rgba(0,0,0,.5)">Рақмет!</div>
   <div class="abs pop" style="--d:700;left:0;top:430px;width:1920px;text-align:center;font-size:82px;font-weight:900;color:#F5B82E">Жайлаудың ауасы таза болсын!</div>
-  <div class="abs pop" style="--d:1100;left:0;top:560px;width:1920px;text-align:center;font-size:52px;font-weight:800;color:#DDF2E3">Туған жерімізді сүйейік, табиғатты қорғайық!</div>
+  <div class="abs pop" style="--d:1100;left:0;top:560px;width:1920px;text-align:center;font-size:52px;font-weight:800;color:#DDF2E3">Туған жерімізді қадірлейік, табиғатты қорғайық!</div>
   <div class="abs pop" style="--d:1400;left:0;top:780px;width:1920px;display:flex;justify-content:center;align-items:center;gap:40px"><img data-img="logo" style="width:150px;height:150px;border-radius:50%;background:#fff;padding:8px" alt="Логотип"><button class="btn gold" id="again" style="height:110px;font-size:44px">↺ Басынан бастау</button></div>`,
   init(r) { $('#again', r).onclick = () => go(0); r.addEventListener('click', (e) => { if (e.target.closest('button')) return; const p = toStage(e.clientX, e.clientY); FX.emoji(p.x, p.y, '🍃', 8, 1); sfx.pop(); }); },
   enter() { FX.ambient('green'); setTimeout(() => { sfx.win(); FX.burst(960, 300, 150); }, 500); },
